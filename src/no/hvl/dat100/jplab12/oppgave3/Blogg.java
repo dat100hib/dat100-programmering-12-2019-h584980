@@ -1,72 +1,141 @@
 package no.hvl.dat100.jplab12.oppgave3;
 
-import no.hvl.dat100.jplab12.common.TODO;
 import no.hvl.dat100.jplab12.oppgave1.*;
+import no.hvl.dat100.jplab12.oppgave2.Tekst;
 
 public class Blogg {
 
-	// TODO: objektvariable 
+	private Innlegg[] innleggtabell;
+	private int nesteLedig;
 
 	public Blogg() {
-		throw new UnsupportedOperationException(TODO.constructor("Blogg"));
+		this.innleggtabell = new Innlegg[20];
+		this.nesteLedig = 0;
 	}
 
 	public Blogg(int lengde) {
-		throw new UnsupportedOperationException(TODO.constructor("Blogg"));
+		this.innleggtabell = new Innlegg[lengde];
+		this.nesteLedig = 0;
 	}
 
 	public int getAntall() {
-		throw new UnsupportedOperationException(TODO.method());
+		int antall = 0;
+		for (Innlegg innlegg : innleggtabell) {
+			if (innlegg != null) {
+				antall++;
+			}
+		}
+		return antall;
 	}
-	
+
 	public Innlegg[] getSamling() {
-		throw new UnsupportedOperationException(TODO.method());
-
+		return innleggtabell;
 	}
-	
-	public int finnInnlegg(Innlegg innlegg) {
 
-		throw new UnsupportedOperationException(TODO.method());
+	public int finnInnlegg(Innlegg innlegg) {
+		int innleggPos = -1;
+		for (int i = 0; i < innleggtabell.length; i++) {
+			if (innlegg.erLik(innleggtabell[i])) {
+				innleggPos = i;
+				break;
+			}
+		}
+		return innleggPos;
 	}
 
 	public boolean finnes(Innlegg innlegg) {
-		throw new UnsupportedOperationException(TODO.method());
+		boolean finnes = false;
+		for (Innlegg innleggTab : innleggtabell) {
+			if (innleggTab != null && innleggTab.getId() == innlegg.getId()) {
+				finnes = true;
+				break;
+			}
+		}
+		return finnes;
 	}
 
 	public boolean ledigPlass() {
-		throw new UnsupportedOperationException(TODO.method());
-
+		boolean ledigPlass = false;
+		for (Innlegg innlegg : innleggtabell) {
+			if (innlegg == null) {
+				ledigPlass = true;
+				break;
+			}
+		}
+		return ledigPlass;
 	}
-	
+
 	public boolean leggTil(Innlegg innlegg) {
-
-		throw new UnsupportedOperationException(TODO.method());
+		boolean lagtTil = false;
+		if (!finnes(innlegg) && ledigPlass() && innleggtabell[nesteLedig] == null) {
+			innleggtabell[nesteLedig] = innlegg;
+			lagtTil = true;
+			nesteLedig++;
+		}
+		return lagtTil;
 	}
-	
+
 	public String toString() {
-		throw new UnsupportedOperationException(TODO.method());
+		String string = getAntall() + "\n";
+		for (Innlegg innlegg : innleggtabell) {
+			if (innlegg != null) {
+				string = string + innlegg.toString();
+			}
+		}
+		return string;
 	}
 
 	// valgfrie oppgaver nedenfor
-	
+
 	public void utvid() {
-		throw new UnsupportedOperationException(TODO.method());
+		Innlegg[] innleggtabell2 = new Innlegg[innleggtabell.length * 2];
+		for (int i = 0; i < innleggtabell.length; i++) {
+			innleggtabell2[i] = innleggtabell[i];
+		}
+		innleggtabell = innleggtabell2;
 	}
-	
+
 	public boolean leggTilUtvid(Innlegg innlegg) {
+		boolean lagtInn = false;
+		if (ledigPlass() && !finnes(innlegg)) {
+			leggTil(innlegg);
+			lagtInn = true;
+		} else if (!ledigPlass() && !finnes(innlegg)) {
+			utvid();
+			leggTil(innlegg);
+			lagtInn = true;
+		}
+		return lagtInn;
+	}
 
-		throw new UnsupportedOperationException(TODO.method());
-		
+	public boolean slett(Innlegg innlegg) {
+		boolean slettet = false;
+		if (finnes(innlegg)) {
+			int pos = finnInnlegg(innlegg);
+			int antall = getAntall();
+			innleggtabell[pos] = null;
+			slettet = true;
+			for (; pos < (antall - 1); pos++) {
+				innleggtabell[pos] = innleggtabell[pos + 1];
+			}
+			innleggtabell[antall - 1] = null;
+			nesteLedig--;
+		}
+		return slettet;
 	}
-	
-	public void slett(Innlegg innlegg) {
-		
-		throw new UnsupportedOperationException(TODO.method());
-	}
-	
+
 	public int[] search(String keyword) {
-		
-		throw new UnsupportedOperationException(TODO.method());
-
+		int[] IDer = new int[innleggtabell.length];
+		int pos = 0;
+		for (int i = 0; i < innleggtabell.length; i++) {
+			if (innleggtabell[i] != null) {
+				String tekst = ((Tekst) innleggtabell[i]).getTekst();
+				if (tekst.contains(keyword)) {
+					IDer[pos] = innleggtabell[i].getId();
+					pos++;
+				}
+			}
+		}
+		return IDer;
 	}
 }
