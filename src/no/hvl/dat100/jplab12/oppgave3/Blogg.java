@@ -33,14 +33,12 @@ public class Blogg {
 	}
 
 	public int finnInnlegg(Innlegg innlegg) {
-		int innleggPos = -1;
 		for (int i = 0; i < innleggtabell.length; i++) {
 			if (innlegg.erLik(innleggtabell[i])) {
-				innleggPos = i;
-				return innleggPos;
+				return i;
 			}
 		}
-		return innleggPos;
+		return -1;
 	}
 
 	public boolean finnes(Innlegg innlegg) {
@@ -62,13 +60,12 @@ public class Blogg {
 	}
 
 	public boolean leggTil(Innlegg innlegg) {
-		boolean lagtTil = false;
 		if (!finnes(innlegg) && ledigPlass() && innleggtabell[nesteLedig] == null) {
 			innleggtabell[nesteLedig] = innlegg;
-			lagtTil = true;
 			nesteLedig++;
+			return true;
 		}
-		return lagtTil;
+		return false;
 	}
 
 	public String toString() {
@@ -92,32 +89,30 @@ public class Blogg {
 	}
 
 	public boolean leggTilUtvid(Innlegg innlegg) {
-		boolean lagtInn = false;
 		if (ledigPlass() && !finnes(innlegg)) {
 			leggTil(innlegg);
-			lagtInn = true;
+			return true;
 		} else if (!ledigPlass() && !finnes(innlegg)) {
 			utvid();
 			leggTil(innlegg);
-			lagtInn = true;
+			return true;
 		}
-		return lagtInn;
+		return false;
 	}
 
 	public boolean slett(Innlegg innlegg) {
-		boolean slettet = false;
 		if (finnes(innlegg)) {
 			int pos = finnInnlegg(innlegg);
 			int antall = getAntall();
 			innleggtabell[pos] = null;
-			slettet = true;
 			for (; pos < (antall - 1); pos++) {
 				innleggtabell[pos] = innleggtabell[pos + 1];
 			}
 			innleggtabell[antall - 1] = null;
 			nesteLedig--;
+			return true;
 		}
-		return slettet;
+		return false;
 	}
 
 	public int[] search(String keyword) {
