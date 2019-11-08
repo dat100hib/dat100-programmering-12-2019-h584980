@@ -37,32 +37,28 @@ public class Blogg {
 		for (int i = 0; i < innleggtabell.length; i++) {
 			if (innlegg.erLik(innleggtabell[i])) {
 				innleggPos = i;
-				break;
+				return innleggPos;
 			}
 		}
 		return innleggPos;
 	}
 
 	public boolean finnes(Innlegg innlegg) {
-		boolean finnes = false;
 		for (Innlegg innleggTab : innleggtabell) {
 			if (innleggTab != null && innleggTab.getId() == innlegg.getId()) {
-				finnes = true;
-				break;
+				return true;
 			}
 		}
-		return finnes;
+		return false;
 	}
 
 	public boolean ledigPlass() {
-		boolean ledigPlass = false;
 		for (Innlegg innlegg : innleggtabell) {
 			if (innlegg == null) {
-				ledigPlass = true;
-				break;
+				return true;
 			}
 		}
-		return ledigPlass;
+		return false;
 	}
 
 	public boolean leggTil(Innlegg innlegg) {
